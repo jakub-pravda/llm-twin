@@ -1,0 +1,24 @@
+vars: {
+    d2-config: {
+        layout-engine: elk
+        theme-id: 200 # dark mauve
+    }
+}
+
+Data Collection Pipeline {
+    ETL {
+        shape: page
+        style.multiple: true
+    }
+
+    MongoDB {
+        shape: cylinder
+    }
+}
+
+RabbitMQ {
+    shape: queue
+}
+
+Data collection Pipeline.ETL -> Data collection Pipeline.MongoDB
+Data Collection Pipeline.MongoDB -> RabbitMQ: CDC

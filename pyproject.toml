@@ -1,0 +1,37 @@
+[project]
+name = "llm-twin"
+version = "0.1.0"
+requires-python = ">=3.12"
+
+[tool.poetry]
+name = "llm-twin"
+version = "0.1.0"
+description = ""
+authors = ["Jakub Pravda <me@jakubpravda.net>"]
+# readme = "README.md"
+# license = "BSD"
+packages = [
+  { include = "src/data_fetch" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pydantic = "^2.10.4"
+pymongo = "^4.10.1"
+loguru = "^0.7.3"
+click = "^8.1.8"
+azure-identity = "^1.19.0"
+azure-keyvault-secrets = "^4.9.0"
+
+[tool.poetry.group.develop.dependencies]
+ruff = "^0.8.4"
+mypy = "^1.14.0"
+isort = "^5.13.2"
+
+
+[tool.poetry.group.datafetch.dependencies]
+telethon = "^1.38.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

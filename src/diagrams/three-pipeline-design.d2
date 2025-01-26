@@ -1,0 +1,46 @@
+vars: {
+    d2-config: {
+        layout-engine: elk
+        theme-id: 200 # dark mauve
+    }
+}
+
+model registry {
+    shape: cylinder
+}
+
+feature store {
+    shape: cylinder
+}
+
+feature pipeline {
+    shape: page
+}
+
+training pipeline {
+    shape: page
+}
+
+inference pipeline {
+    shape: page
+}
+
+data {
+    shape: circle
+}
+
+predictions {
+    shape: circle
+}
+
+direction: right
+data -> feature pipeline
+feature pipeline -> feature store: Features and Labels
+
+feature store -> training pipeline: Features and Labels
+training pipeline -> model registry: Model
+
+feature store -> inference pipeline: Features
+model registry -> inference pipeline: Model
+
+inference pipeline -> predictions: Predictions

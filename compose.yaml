@@ -1,0 +1,25 @@
+services:
+  mongo:
+    image: mongo:7.0
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  data-fetcher-telegram:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    entrypoint: [
+      "poetry", 
+      "run", 
+      "python", 
+      "main.py", 
+      "--data-fetcher", 
+      "telegram",
+      "--azure-keyvault-name",
+      "llm-twin-kv"
+    ]
