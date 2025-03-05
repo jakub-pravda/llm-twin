@@ -9,6 +9,7 @@ class FetchedData(BaseModel):
     source: str
     created_at: datetime
 
+
 class TelegramApiCredentials(BaseModel):
     api_id: str
     api_hash: str

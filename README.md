@@ -23,7 +23,7 @@ System architecture:
 
 The data collection pipeline contains ETLs that load, clean, normalize, and store the input data in a NoSQL database. The data sources include multiple social media platforms and blog platforms. Finally, the data is stored in the message broker for processing by the feature pipeline using the CDC pattern.
 
-| Note: The data collection pipeline isn't directly part of the FTI architecture. For large systems, the data team is responsible for this part of the pipeline.   
+| Note: The data collection pipeline isn't directly part of the FTI architecture. For large systems, the data team is responsible for this part of the pipeline.
 
 #### Feature pipeline
 

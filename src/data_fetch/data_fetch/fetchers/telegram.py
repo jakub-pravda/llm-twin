@@ -10,29 +10,45 @@ from data_fetch.models import FetchedData, TelegramApiCredentials
 
 class TelegramDataFetcher(BaseDataFetcher):
     
-    DEFAULT_MESSAGE_OFFSET = datetime.now() - timedelta(days=365) # 1 year
+    DEFAULT_MESSAGE_OFFSET = datetime.now() - timedelta(days=365)  # 1 year
+    FETCHER_NAME = "telegram"
 
-    def __init__(self, telegram_credentials: TelegramApiCredentials, entity_ids: Tuple[str,...]):
-        self.client = TelegramClient("telegram_data_fetcher", telegram_credentials.api_id, telegram_credentials.api_hash)
+    def __init__(
+        self, telegram_credentials: TelegramApiCredentials, entity_ids: Tuple[str, ...]
+    ):
+        self.client = TelegramClient(
+            "telegram_data_fetcher",
+            telegram_credentials.api_id,
+            telegram_credentials.api_hash,
+        )
         self.entity_ids = entity_ids
 
     async def fetch(self, offset_date: datetime) -> AsyncIterator[FetchedData]:
         await self.__init__client()
-        
+
         for entity_id in self.entity_ids:
             logger.info(f"Fetching messages for entity ID: {entity_id}")
             async for message in self.fetch_by_entity_id(entity_id, offset_date):
                 yield message
 
-    #TODO pydantic data types
-    async def fetch_by_entity_id(self, entity_id: str, offset_date: datetime) -> AsyncIterator[FetchedData]:
-        message_iterator = self.client.iter_messages(entity_id, reverse=True, offset_date=offset_date)
+    # TODO pydantic data types
+    async def fetch_by_entity_id(
+        self, entity_id: str, offset_date: datetime
+    ) -> AsyncIterator[FetchedData]:
+        message_iterator = self.client.iter_messages(
+            entity_id, reverse=True, offset_date=offset_date
+        )
         async for message in message_iterator:
             logger.debug(f"Raw Telethon fetched message: {message}")
             if message.message:
                 # return only messages with text content
                 sender_id = str(message.sender_id)
-                yield FetchedData(author=sender_id, content=message.message, source="Telegram", created_at=message.date)
+                yield FetchedData(
+                    author=sender_id,
+                    content=message.message,
+                    source="Telegram",
+                    created_at=message.date,
+                )
 
     async def __init__client(self) -> None:
         try:
