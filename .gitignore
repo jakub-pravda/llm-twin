@@ -175,3 +175,6 @@ cython_debug/
 
 # telegram files
 *.session
+
+# docker compose files
+rabbitmq

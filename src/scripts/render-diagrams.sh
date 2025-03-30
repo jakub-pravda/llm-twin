@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # This script renders all diagrams in the project with d2 cli tool
 

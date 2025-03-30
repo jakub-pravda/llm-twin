@@ -16,6 +16,7 @@
         
         pkgs.mkShell {
           buildInputs = with pkgs; [
+            mongosh
             (poetry.override { python3 = python312; })
             python312
             python312Packages.mypy
