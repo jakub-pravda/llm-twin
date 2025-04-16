@@ -12,7 +12,8 @@ authors = ["Jakub Pravda <me@jakubpravda.net>"]
 # license = "BSD"
 packages = [
   { include = "src/data_fetch" },
-  { include = "src/cdc" }
+  { include = "src/cdc" },
+  { include = "src/feature_pipeline" },
 ]
 
 [tool.poetry.dependencies]
@@ -24,6 +25,7 @@ click = "^8.1.8"
 azure-identity = "^1.19.0"
 azure-keyvault-secrets = "^4.9.0"
 kombu = "^5.5.0"
+bytewax = "^0.21.1"
 
 [tool.poetry.group.develop.dependencies]
 ruff = "^0.8.4"

@@ -1,4 +1,3 @@
-import urllib.parse
 from typing import Any, Mapping, Optional
 
 import click
@@ -13,16 +12,16 @@ class AqmpPublisher:
     def __init__(self, rabbit_mq_host: str):
         self.__aqmp_connection_string = f"amqp://{rabbit_mq_host}//"
 
-        self.__cdc_exchange = Exchange("cdc", type="direct")
-        self.__cdc_routing_key = "cdc"
-
-        self.__cdc_queue = Queue('cdc', exchange=self.__cdc_exchange, routing_key=self.__cdc_routing_key)
+        # TODO move it to share
+        self.__feature_pipeline_exchange = Exchange("feature_pipeline", type="direct")
+        self.__feature_pipeline_routing_key = "feature_pipeline"
+        self.__feature_pipeline_queue = Queue('feature_pipeline', exchange=self.__feature_pipeline_exchange, routing_key=self.__feature_pipeline_routing_key)
 
     def publish(self, document: Mapping[str, Any]) -> None:
         logger.debug("Aqmp publisher, sending document {}", document)
         with Connection(self.__aqmp_connection_string) as conn:
             producer = conn.Producer(serializer="json")
-            producer.publish(document, exchange=self.__cdc_exchange, routing_key=self.__cdc_routing_key, declare=[self.__cdc_queue])
+            producer.publish(document, exchange=self.__feature_pipeline_exchange, routing_key=self.__feature_pipeline_routing_key, declare=[self.__feature_pipeline_queue])
             logger.debug("Aqmp publisher, document has been published {}", document)
         
 
@@ -59,6 +58,7 @@ class MongoCDC:
     default=None
 )
 def main(mongo_host: str, mongo_port: int, rabbit_mq_host: str, azure_keyvault_name: Optional[str]) -> None:
+    #TODO azure key vault name needed?
     logger.info("CDC service started")
 
     aqmp_publisher = AqmpPublisher(rabbit_mq_host)
