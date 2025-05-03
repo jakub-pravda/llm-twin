@@ -16,9 +16,11 @@ class DataFetcherArg(Enum):
 
 class BaseDataFetcher(ABC):
     FETCHER_NAME: str
-    
+
     @abstractmethod
-    def fetch(self, offset_date: datetime) -> AsyncIterator[FetchedData]:  # TODO type
+    def fetch(
+        self, offset_date: datetime
+    ) -> AsyncIterator[FetchedData]:  # TODO type
         pass
 
     @staticmethod
@@ -29,18 +31,21 @@ class BaseDataFetcher(ABC):
         match data_fetcher_arg:
             case DataFetcherArg.DUMMY:
                 from .dummy import DummyDataFetcher
+
                 return DummyDataFetcher()
             case DataFetcherArg.TELEGRAM:
                 from .telegram import TelegramDataFetcher
 
                 if not key_store:
-                    raise ValueError("Key store must be defined for Telegram fetcher")
+                    raise ValueError(
+                        "Key store must be defined for Telegram fetcher"
+                    )
 
                 telegram_api_credentials = key_store.telegram_api_credentials()
 
                 return TelegramDataFetcher(
                     telegram_credentials=telegram_api_credentials,
-                    entity_ids=("+420 731 221 662",), # TODO entity ids to 
+                    entity_ids=("+420 731 221 662",),  # TODO entity ids to
                 )
             case _:
                 return None

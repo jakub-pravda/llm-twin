@@ -12,7 +12,8 @@ authors = ["Jakub Pravda <me@jakubpravda.net>"]
 # license = "BSD"
 packages = [
   { include = "src/data_fetch" },
-  { include = "src/cdc" }
+  { include = "src/cdc" },
+  { include = "src/feature_pipeline" },
 ]
 
 [tool.poetry.dependencies]
@@ -28,11 +29,15 @@ kombu = "^5.5.0"
 [tool.poetry.group.develop.dependencies]
 ruff = "^0.8.4"
 mypy = "^1.14.0"
-isort = "^5.13.2"
-
 
 [tool.poetry.group.datafetch.dependencies]
 telethon = "^1.38.1"
+
+[tool.poetry.group.featurepipeline.dependencies]
+bytewax = "^0.21.1"
+langchain = "^0.3.23"
+sentence-transformers = "^4.1.0"
+qdrant-client = "^1.14.2"
 
 [build-system]
 requires = ["poetry-core"]

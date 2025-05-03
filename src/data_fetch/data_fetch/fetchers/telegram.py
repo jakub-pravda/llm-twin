@@ -9,12 +9,13 @@ from data_fetch.models import TelegramApiCredentials, TelegramFetchedData
 
 
 class TelegramDataFetcher(BaseDataFetcher):
-    
     DEFAULT_MESSAGE_OFFSET = datetime.now() - timedelta(days=365)  # 1 year
     FETCHER_NAME = DataFetcherArg.TELEGRAM.value
 
     def __init__(
-        self, telegram_credentials: TelegramApiCredentials, entity_ids: Tuple[str, ...]
+        self,
+        telegram_credentials: TelegramApiCredentials,
+        entity_ids: Tuple[str, ...],
     ):
         self.client = TelegramClient(
             "telegram_data_fetcher",
@@ -23,12 +24,16 @@ class TelegramDataFetcher(BaseDataFetcher):
         )
         self.entity_ids = entity_ids
 
-    async def fetch(self, offset_date: datetime) -> AsyncIterator[TelegramFetchedData]:
+    async def fetch(
+        self, offset_date: datetime
+    ) -> AsyncIterator[TelegramFetchedData]:
         await self.__init__client()
 
         for entity_id in self.entity_ids:
             logger.info(f"Fetching messages for entity ID: {entity_id}")
-            async for message in self.fetch_by_entity_id(entity_id, offset_date):
+            async for message in self.fetch_by_entity_id(
+                entity_id, offset_date
+            ):
                 yield message
 
     # TODO pydantic data types
@@ -46,7 +51,6 @@ class TelegramDataFetcher(BaseDataFetcher):
                 yield TelegramFetchedData(
                     author=sender_id,
                     content=message.message,
-                    source=DataFetcherArg.TELEGRAM.value,
                     created_at=message.date,
                 )
 

@@ -15,6 +15,8 @@
         default = 
         
         pkgs.mkShell {
+          LD_LIBRARY_PATH=pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc ];
+          
           buildInputs = with pkgs; [
             mongosh
             (poetry.override { python3 = python312; })

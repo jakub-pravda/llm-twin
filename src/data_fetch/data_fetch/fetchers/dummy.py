@@ -8,10 +8,11 @@ from data_fetch.models import DummyFetchedData
 
 class DummyDataFetcher(BaseDataFetcher):
     FETCHER_NAME = DataFetcherArg.DUMMY.value
-    
-    async def fetch(self, offset_date: datetime) -> AsyncIterator[DummyFetchedData]:
+
+    async def fetch(
+        self, offset_date: datetime
+    ) -> AsyncIterator[DummyFetchedData]:
         yield DummyFetchedData(
-            dummy_content=f"Dummy message {random.randint(1, 1000)}",
-            source=DataFetcherArg.DUMMY.value,
+            content=f"Dummy message {random.randint(1, 1000)}",
             created_at=datetime.now(),
         )

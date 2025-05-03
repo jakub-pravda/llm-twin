@@ -24,11 +24,17 @@ class AzureKeyStore(BaseKeyStore):
 
         api_id = self.client.get_secret(self.TELEGRAM_API_ID_SECRET_NAME).value
         if api_id is None:
-            raise ValueError(f"{self.TELEGRAM_API_ID_SECRET_NAME} secret is not set")
+            raise ValueError(
+                f"{self.TELEGRAM_API_ID_SECRET_NAME} secret is not set"
+            )
 
-        api_hash = self.client.get_secret(self.TELEGRAM_API_HASH_SECRET_NAME).value
+        api_hash = self.client.get_secret(
+            self.TELEGRAM_API_HASH_SECRET_NAME
+        ).value
         if api_hash is None:
-            raise ValueError(f"{self.TELEGRAM_API_HASH_SECRET_NAME} secret is not set")
+            raise ValueError(
+                f"{self.TELEGRAM_API_HASH_SECRET_NAME} secret is not set"
+            )
 
         logger.info(
             "Telegram API credentials successfully retrieved from azure keyvault"

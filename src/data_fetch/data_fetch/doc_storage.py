@@ -1,4 +1,3 @@
-import urllib.parse
 from abc import ABC, abstractmethod
 from typing import Any, AsyncIterator, Iterable, List, Mapping, Optional, Tuple
 
@@ -11,7 +10,9 @@ from data_fetch.models import FetchedData
 
 class DocumentStorage(ABC):
     @abstractmethod
-    async def insert(self, fetched_data: AsyncIterator[FetchedData], collection: str) -> None:
+    async def insert(
+        self, fetched_data: AsyncIterator[FetchedData], collection: str
+    ) -> None:
         pass
 
 
@@ -30,9 +31,12 @@ class MongoDocumentStorage(DocumentStorage):
         if last_inserted is None:
             return None
         else:
+            logger.debug("Last inserted document found: {}", last_inserted)
             return FetchedData.model_validate(last_inserted)
 
-    async def insert(self, fetched_data: AsyncIterator[FetchedData], collection: str) -> None:
+    async def insert(
+        self, fetched_data: AsyncIterator[FetchedData], collection: str
+    ) -> None:
         number_of_attempts = 3
 
         while True:
@@ -51,12 +55,17 @@ class MongoDocumentStorage(DocumentStorage):
         logger.info("Fetched data insertion finished")
 
     def __attempt_insert(
-        self, data_batch: Iterable[FetchedData], collection: str, number_of_attempts: int
+        self,
+        data_batch: Iterable[FetchedData],
+        collection: str,
+        number_of_attempts: int,
     ) -> None:
         db = self.__client()[self.database_name]
         src = collection
-        data_batch_dumped = [item.model_dump(by_alias=True) for item in data_batch]
-    
+        data_batch_dumped = [
+            item.model_dump(by_alias=True) for item in data_batch
+        ]
+
         if len(data_batch_dumped) == 0:
             logger.debug("No data to insert")
             return
@@ -69,7 +78,9 @@ class MongoDocumentStorage(DocumentStorage):
                     number_of_attempts,
                 )
                 source_collection = db[src]
-                insert_many_result = source_collection.insert_many(data_batch_dumped)
+                insert_many_result = source_collection.insert_many(
+                    data_batch_dumped
+                )
 
                 len_data_batch = len(data_batch_dumped)
                 len_inserted = len(insert_many_result.inserted_ids)
@@ -77,7 +88,8 @@ class MongoDocumentStorage(DocumentStorage):
                 if len_data_batch == len_inserted:
                     # success
                     logger.debug(
-                        "Successfully inserted batch with {} documents", len_inserted
+                        "Successfully inserted batch with {} documents",
+                        len_inserted,
                     )
                     break
                 else:
@@ -90,7 +102,8 @@ class MongoDocumentStorage(DocumentStorage):
                 if attempt >= number_of_attempts:
                     # for now, just log the error
                     logger.error(
-                        "Batch insertion failed after {} attempts", number_of_attempts
+                        "Batch insertion failed after {} attempts",
+                        number_of_attempts,
                     )
 
             except ServerSelectionTimeoutError as e:
@@ -98,18 +111,24 @@ class MongoDocumentStorage(DocumentStorage):
                 if attempt >= number_of_attempts:
                     raise e
             except Exception as e:
-                logger.error("Document insertion failed with exception. Error {}", e)
+                logger.error(
+                    "Document insertion failed with exception. Error {}", e
+                )
                 # unknown error, skip other attempts
                 raise e
 
     def __client(self) -> MongoClient[Mapping[str, Any]]:
-        #username = urllib.parse.quote_plus("sa")  # TODO store secrets
-        #password = urllib.parse.quote_plus("Password123")  # TODO store secrets
+        # username = urllib.parse.quote_plus("sa")  # TODO store secrets
+        # password = urllib.parse.quote_plus("Password123")  # TODO store secrets
         mongo_conn_string = f"mongodb://{self.mongo_host}:{self.mongo_port}"
-        logger.info(f"Connecting to mongo with connection string {mongo_conn_string}")
+        logger.info(
+            f"Connecting to mongo with connection string {mongo_conn_string}"
+        )
 
         mongo_client = MongoClient(mongo_conn_string)  # type:ignore
-        logger.debug("Mongo client object id: {}", id(mongo_client))  # TODO delete
+        logger.debug(
+            "Mongo client object id: {}", id(mongo_client)
+        )  # TODO delete
         return mongo_client
 
     async def __get_data_batch(

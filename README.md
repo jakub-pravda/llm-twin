@@ -27,7 +27,7 @@ The data collection pipeline contains ETLs that load, clean, normalize, and stor
 
 #### Feature pipeline
 
-> will be used to create features from the input data
+The feature pipeline collects raw data from the message broker, transforms it into features, and stores them in the vector database, from where the inference and training pipelines can access them. The feature pipeline is the first pipeline in the FTI architecture.
 
 #### Training pipeline
 
